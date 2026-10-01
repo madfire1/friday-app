@@ -2,16 +2,31 @@ name: Build APK
 on: [push, pull_request]
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
 
-    - name: Fabbrica APK con Buildozer
-      uses: ArtemSBulgakov/buildozer-action@v1
+    - name: Configura Java Corretto
+      uses: actions/setup-java@v4
       with:
-        command: buildozer android debug
+        distribution: 'temurin'
+        java-version: '17'
 
-    - name: Scarica il file APK
+    - name: Configura Android SDK e Licenze
+      uses: android-actions/setup-android@v3
+
+    - name: Installa Python e Dipendenze
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libsqlite3-dev lld zlib1g-dev libffi-dev libssl-dev
+        pip3 install --user buildozer cython
+
+    - name: Compila con Buildozer
+      run: buildozer android debug
+      env:
+        ACCEPT_SDK_LICENSE: "true"
+
+    - name: Salva il file APK
       uses: actions/upload-artifact@v4
       with:
         name: Friday-APK
