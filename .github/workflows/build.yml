@@ -6,25 +6,12 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up SDK and Accept Licenses
-      uses: android-actions/setup-android@v3
-
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Fabbrica APK con Buildozer
+      uses: ArtemSBulgakov/buildozer-action@v1
       with:
-        python-version: '3.11'
+        command: buildozer android debug
 
-    - name: Install Dependencies
-      run: |
-        pip3 install --user buildozer cython
-        sudo apt-get install -y libsqlite3-dev lld zlib1g-dev
-
-    - name: Build with Buildozer
-      run: buildozer android debug
-      env:
-        ACCEPT_SDK_LICENSE: "true"
-
-    - name: Upload APK
+    - name: Scarica il file APK
       uses: actions/upload-artifact@v4
       with:
         name: Friday-APK
