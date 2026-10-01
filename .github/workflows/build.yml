@@ -6,23 +6,24 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Configura Java Corretto
+    - name: Configura Java
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Configura Android SDK e Licenze
-      uses: android-actions/setup-android@v3
-
     - name: Installa Python e Dipendenze
       run: |
         sudo apt-get update
-        sudo apt-get install -y libsqlite3-dev lld zlib1g-dev libffi-dev libssl-dev
+        sudo apt-get install -y libsqlite3-dev lld zlib1g-dev libffi-dev libssl-dev autoconf libtool pkg-config
         pip3 install --user buildozer cython
 
-    - name: Compila con Buildozer
-      run: buildozer android debug
+    - name: Compila APK e Accetta Licenze
+      run: |
+        # Questo comando crea in anticipo la cartella delle licenze Android ed evita i blocchi di Google
+        mkdir -p ~/.android && touch ~/.android/repositories.cfg
+        # Avvia la compilazione dicendo automaticamente di sì a ogni contratto
+        yes | buildozer android debug
       env:
         ACCEPT_SDK_LICENSE: "true"
 
