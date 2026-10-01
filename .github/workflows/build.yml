@@ -14,7 +14,9 @@ jobs:
         pip3 install --user buildozer cython
         sudo apt-get install -y libsqlite3-dev lld zlib1g-dev
     - name: Build with Buildozer
-      run: buildozer android debug
+      run: |
+        # Questo comando dice a Buildozer di accettare da solo le licenze di Android
+        yes | buildozer android debug
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
